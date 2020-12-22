@@ -6,10 +6,16 @@ variable "name" {
   description = "Name  (e.g. `app` or `cluster`)."
 }
 
-variable "application" {
+variable "repository" {
   type        = string
   default     = ""
-  description = "Application (e.g. `cd` or `clouddrove`)."
+  description = "Terraform current module repo"
+
+  validation {
+    # regex(...) fails if it cannot find a match
+    condition     = can(regex("^https://", var.repository))
+    error_message = "The module-repo value must be a valid Git repo link."
+  }
 }
 
 variable "environment" {
@@ -32,8 +38,8 @@ variable "attributes" {
 
 variable "managedby" {
   type        = string
-  default     = "anmol@clouddrove.com"
-  description = "ManagedBy, eg 'CloudDrove' or 'AnmolNagpal'."
+  default     = "hello@clouddrove.com"
+  description = "ManagedBy, eg 'CloudDrove'."
 }
 
 variable "delimiter" {
@@ -119,48 +125,56 @@ variable "delegation_set_id" {
   type        = string
   default     = ""
   description = "The ID of the reusable delegation set whose NS records you want to assign to the hosted zone. Conflicts with vpc as delegation sets can only be used for public zones."
+  sensitive   = true
 }
 
 variable "vpc_id" {
   type        = string
   default     = ""
   description = "VPC ID."
+  sensitive   = true
 }
 
 variable "types" {
   type        = list
   default     = []
   description = "The record type. Valid values are A, AAAA, CAA, CNAME, MX, NAPTR, NS, PTR, SOA, SPF, SRV and TXT. "
+  sensitive   = true
 }
 
 variable "ttls" {
   type        = list
   default     = []
   description = "(Required for non-alias records) The TTL of the record."
+  sensitive   = true
 }
 
 variable "names" {
   type        = list
   default     = []
   description = "The name of the record."
+  sensitive   = true
 }
 
 variable "values" {
   type        = list
   default     = []
   description = "(Required for non-alias records) A string list of records. To specify a single record value longer than 255 characters such as a TXT record for DKIM, add \"\" inside the Terraform configuration string (e.g. \"first255characters\"\"morecharacters\")."
+  sensitive   = true
 }
 
 variable "set_identifiers" {
   type        = list
   default     = []
   description = "Unique identifier to differentiate records with routing policies from one another. Required if using failover, geolocation, latency, or weighted routing policies documented below."
+  sensitive   = true
 }
 
 variable "health_check_ids" {
   type        = list
   default     = []
   description = "The health check the record should be associated with."
+  sensitive   = true
 }
 
 variable "alias" {
@@ -193,12 +207,14 @@ variable "multivalue_answer_routing_policies" {
   type        = list
   default     = []
   description = "Set to true to indicate a multivalue answer routing policy. Conflicts with any other routing policy."
+  sensitive   = true
 }
 
 variable "allow_overwrites" {
   type        = list
   default     = []
   description = "Allow creation of this record in Terraform to overwrite an existing record, if any. This does not affect the ability to update the record in Terraform and does not prevent other resources within Terraform or manual Route 53 changes outside Terraform from overwriting this record. false by default. This configuration is not recommended for most environments."
+  sensitive   = true
 }
 
 variable "enabled" {
@@ -211,6 +227,7 @@ variable "secondary_vpc_id" {
   type        = string
   default     = ""
   description = "The VPC to associate with the private hosted zone."
+  sensitive   = true
 }
 
 variable "secondary_vpc_region" {
@@ -223,4 +240,5 @@ variable "zone_id" {
   type        = string
   default     = ""
   description = "Zone ID."
+  sensitive   = true
 }

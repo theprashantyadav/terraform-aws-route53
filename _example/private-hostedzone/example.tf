@@ -6,9 +6,9 @@ module "route53" {
   source = "../../"
 
   name            = "route53"
-  application     = "clouddrove"
+  repository      = "https://registry.terraform.io/modules/clouddrove/route53/aws/0.14.0"
   environment     = "test"
-  label_order     = ["environment", "name", "application"]
+  label_order     = ["name", "environment"]
   private_enabled = true
   record_enabled  = true
 
